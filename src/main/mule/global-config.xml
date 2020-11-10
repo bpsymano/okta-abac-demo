@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    
+    <configuration defaultErrorHandler-ref="error-handler" />
+    
+    <!-- default property values -->
+    <global-property doc:name="Global Property" name="mule.env" value="dev"/>    
+    <global-property doc:name="Global Property" name="http.port" value="8081"/>
+
+    <http:listener-config name="okta-abac-demo-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
+    </http:listener-config>
+
+    <apikit:config name="okta-abac-demo-config" 
+        api="okta-abac-demo.raml" 
+        outboundHeadersMapName="outboundHeaders" 
+        httpStatusVarName="httpStatus" 
+        raml="api/okta-abac-demo.raml"/>
+
+    <api-gateway:autodiscovery apiId="${api.id}"
+        doc:name="API Autodiscovery" 
+        flowRef="okta-abac-demo-main" />    
+    
+    <configuration-properties
+        doc:name="Configuration properties"
+        file="properties/okta-abac-demo-${mule.env}.properties"/>      
+    
+    </mule>

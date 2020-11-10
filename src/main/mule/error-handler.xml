@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" 
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+    <error-handler name="error-handler">
+        <on-error-propagate type="HTTP:TIMEOUT" enableNotifications="true" logException="false">
+            <set-variable value="408" doc:name="Set 408 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:BAD_REQUEST" enableNotifications="true" logException="false">
+            <set-variable value="400" doc:name="Set 400 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_FOUND" enableNotifications="true" logException="false">
+            <set-variable value="404" doc:name="Set 404 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED" enableNotifications="true"
+            logException="false">
+            <set-variable value="405" doc:name="Set 405 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_ACCEPTABLE" enableNotifications="true"
+            logException="false">
+            <set-variable value="406" doc:name="Set 406 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE" enableNotifications="true"
+            logException="false">
+            <set-variable value="415" doc:name="Set 415 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_IMPLEMENTED" enableNotifications="true"
+            logException="false">
+            <set-variable value="501" doc:name="Set 501 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+        <on-error-propagate enableNotifications="true" logException="false"
+            doc:name="On Error Propagate" type="ANY">
+            <set-variable value="500" doc:name="Set 500 code" variableName="status_code"/>
+            <flow-ref doc:name="handle-error-flow" name="handle-error-flow"/>
+        </on-error-propagate>
+    </error-handler>
+    
+    <sub-flow name="handle-error-flow">
+        <ee:transform doc:name="build error response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status_code: (error.errorMessage.attributes.statusCode default vars.status_code),
+  	error: {
+  		'type': (error.errorType.namespace as String default 'no_namespace') ++ ':' ++ (error.errorType.identifier as String default 'no_identifier'),
+  		message: (error.description as String default 'no_description')
+  	}
+}]]></ee:set-payload>
+            </ee:message>
+            <ee:variables>
+                <ee:set-variable variableName="http_status"><![CDATA[%dw 2.0
+output application/java
+---
+vars.status_code]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+    </sub-flow>
+</mule>

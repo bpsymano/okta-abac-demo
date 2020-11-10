@@ -1,0 +1,375 @@
+{
+	"info": {
+		"_postman_id": "9a2247cd-39e3-495c-aedf-787c3cd51fa3",
+		"name": "okta-abac-demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Primary Authentication (get sessionId test1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d6cc3b0f-b80b-4b72-ae75-f67a3420cb80",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"sessionToken\", jsonData.sessionToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{contracts_api_client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{contracts_api_client_id}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"test1.user@nowhere.org\",\n  \"password\" : \"Passw0rd\",\n  \"options\": {\n    \"multiOptionalFactorEnroll\": true,\n    \"warnBeforePasswordExpired\": true\n  },  \n  \"context\": {\n    \"deviceToken\": \"26q43Ak9Eh04p7H6Nnx0m69JqYOrfVBY\"\n  }\n}  ",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/authn",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"authn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Primary Authentication (get sessionId test2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "576e7208-e89d-4806-ad89-be784e03c4ef",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"sessionToken\", jsonData.sessionToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{contracts_api_client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{contracts_api_client_secret}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"test2.user@nowhere.org\",\n  \"password\" : \"Passw0rd\",\n  \"options\": {\n    \"multiOptionalFactorEnroll\": true,\n    \"warnBeforePasswordExpired\": true\n  },  \n  \"context\": {\n    \"deviceToken\": \"26q43Ak9Eh04p7H6Nnx0m69JqYOrfVBY\"\n  }\n}  ",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/authn",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"authn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Primary Authentication (get sessionId test3)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62241e3b-5168-4263-bf66-3e5e494eed7e",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"sessionToken\", jsonData.sessionToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{contracts_api_client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{contracts_api_client_id}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"test3.user@nowhere.org\",\n  \"password\" : \"Passw0rd\",\n  \"options\": {\n    \"multiOptionalFactorEnroll\": true,\n    \"warnBeforePasswordExpired\": true\n  },  \n  \"context\": {\n    \"deviceToken\": \"26q43Ak9Eh04p7H6Nnx0m69JqYOrfVBY\"\n  }\n}  ",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/authn",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"authn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authorize using client_credentials",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "46ca8c48-7de3-4f45-841a-cd73033cf0a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followAuthorizationHeader": true,
+				"followOriginalHttpMethod": true,
+				"followRedirects": true,
+				"removeRefererHeaderOnRedirect": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dev-5652788.okta.com/oauth2/default/v1/authorize?client_id={{contracts_api_client_id}}&response_type=token&redirect_uri=https://oauth.pstmn.io/v1/callback&nonce=yG4cCBUwuRBob89woR8YuXeZdXelgk2jlMkZDthZyEdU27tfGHBsuZxrL98ybRW5&state=FkSgPf7a6gRQcXt9IBFy0fy5foXIFUS6pYPB6aQhvHpSACdFxh1QJzgBTGHvhzv7",
+					"protocol": "https",
+					"host": [
+						"dev-5652788",
+						"okta",
+						"com"
+					],
+					"path": [
+						"oauth2",
+						"default",
+						"v1",
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "{{contracts_api_client_id}}"
+						},
+						{
+							"key": "response_type",
+							"value": "token"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback"
+						},
+						{
+							"key": "nonce",
+							"value": "yG4cCBUwuRBob89woR8YuXeZdXelgk2jlMkZDthZyEdU27tfGHBsuZxrL98ybRW5"
+						},
+						{
+							"key": "state",
+							"value": "FkSgPf7a6gRQcXt9IBFy0fy5foXIFUS6pYPB6aQhvHpSACdFxh1QJzgBTGHvhzv7"
+						},
+						{
+							"key": "sessionToken",
+							"value": "{{sessionToken}}",
+							"disabled": true
+						},
+						{
+							"key": "response_mode",
+							"value": "query",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "okta-abac-demo (local)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"type": "text",
+						"value": "1"
+					},
+					{
+						"key": "client_secret",
+						"type": "text",
+						"value": "1"
+					},
+					{
+						"key": "client_secret",
+						"value": "1",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/contracts/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"contracts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "okta-abac-demo (CloudHub)",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "eyJraWQiOiJQSnpLdi04YUtKTHJ5cG44QkNGdUNDc0RhdmhOOWhQR0FwNU9FNmtOajJnIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULjI5NU5MblFnMlFBZWRTaGJDa2VUOFl3TExPcUMxTjFTQklfaC1ubUt5TmsiLCJpc3MiOiJodHRwczovL2Rldi01NjUyNzg4Lm9rdGEuY29tL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiYXBpOi8vZGVmYXVsdCIsImlhdCI6MTYwNDk0NTI1NSwiZXhwIjoxNjA0OTQ4ODU1LCJjaWQiOiIwb2FnbGVmeHZuMUxlckE4ODVkNSIsInVpZCI6IjAwdWdranZmNTVVbEZrWmlMNWQ1Iiwic2NwIjpbImNsb3VkaHViIl0sInN1YiI6InRlc3QxLnVzZXJAbm93aGVyZS5vcmciLCJjb250cmFjdElkcyI6WyIxMjMiLCI0NTYiXX0.RE6K3NTg0Lr_FCc_7g-xwjkSljdaa0w7jJsyEtX3I60pt0MoyC1cosPHBdi7SSGCxLveiL8zZTw_i4TdDp9WxgpqOqh8f7Yg1rE7xxm-Vq1amVlIpMztQf2BSEV3mrzwnXcvgtTx66kFa41LSazZV4iS1TmIfXCG6ThD2vGKiYzO45NHehm5vWsIYbx3cSMxcIP0cPeaDg4VaKIUMxnle1Scj3UIyEvaZH6rZJXMFWvjLDN-pce9BSJc-KilLi0RmooxvR6O279nxAKSccRFxfAzSvVCdeFjCvUDp2dk7iVQJSU7_lo9DQaxMvwh6cQbol_jfLB6uXUiJHtvBInFjw",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"type": "text",
+						"value": "1"
+					},
+					{
+						"key": "client_secret",
+						"type": "text",
+						"value": "1"
+					},
+					{
+						"key": "client_secret",
+						"type": "text",
+						"value": "1",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://okta-abac-demo.us-e2.cloudhub.io/api/v1/contracts/1",
+					"protocol": "http",
+					"host": [
+						"okta-abac-demo",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"v1",
+						"contracts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,0 +1,54 @@
+#%RAML 1.0
+title: okta-abac-demo
+version: v1
+baseUri: https://okta-abac-demo.com
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+
+securitySchemes:
+  oauth_2_0:
+    description: |
+      This API supports OAuth 2.0 for authenticating all API requests.
+    type: OAuth 2.0
+    describedBy:
+      headers:
+        Authorization:
+          description: |
+             Used to send a valid OAuth 2 access token. Do not use with the "access_token" query
+             string parameter.
+          type: string
+      queryParameters:
+        access_token:
+          description: |
+             Used to send a valid OAuth 2 access token. Do not use together with the "Authorization"
+             header
+          type: string
+      responses:
+        401:
+          description: |
+            Bad or expired token. This can happen if the user or the API revoked or expired an
+            access token. To fix, you should re-authenticate the user.
+        403:
+          description: |
+            Bad OAuth request (wrong consumer key, bad nonce, expired timestamp...). Unfortunately,
+            re-authenticating the user won't help here.
+    settings:
+      authorizationUri: https://dev-5652788.okta.com/oauth2/default/v1/authorize
+      accessTokenUri: https://dev-5652788.okta.com/oauth2/default/v1/token
+      authorizationGrants: [ authorization_code, implicit ]
+
+/contracts/{contractId}:
+  get:
+    is: [client-id-required]
+    securedBy: [oauth_2_0]
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/contract-response.json          

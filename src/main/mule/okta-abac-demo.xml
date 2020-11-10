@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" 
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+    xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" 
+    xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" 
+    xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd  
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd  
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+
+
+    <flow name="okta-abac-demo-main">
+        <http:listener config-ref="okta-abac-demo-httpListenerConfig" path="/api/${api.version}/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="okta-abac-demo-config" />
+    </flow>
+    
+    <flow name="get:\contracts\(contractId):okta-abac-demo-config">
+    
+        <logger level="DEBUG" doc:name="MESSAGE" message="MESSAGE::#[message]" category="${logger.category}"/>
+        
+        <ee:transform doc:name="Transform ATTRIBUTES" >
+            <ee:variables>
+                <ee:set-variable variableName="attributes"><![CDATA[%dw 2.0
+output application/json
+---
+attributes]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        
+        <logger level="DEBUG" doc:name="ATTRIBUTES" message="ATTRIBUTES::#[vars.attributes]" category="${logger.category}"/>
+        
+        <ee:transform doc:name="Transform AUTHENTICATION" >
+            <ee:variables>
+                <ee:set-variable variableName="authentication"><![CDATA[%dw 2.0
+output application/json
+---
+authentication]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        
+        <logger level="DEBUG" doc:name="AUTHENTICATION" message="AUTHENTICATION::#[vars.authentication]" category="${logger.category}"/>
+        
+        <ee:transform doc:name="grab the URI param">
+            <ee:variables>
+                <ee:set-variable variableName="contractId">attributes.uriParams.'contractId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        
+        <ee:transform doc:name="build stock payload response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  contract_number: 778610,
+  contract_name: "Who ate all my porkrinds???",
+  contract_start: "9/11/2019 12:00:00 AM",
+  contract_end: "9/25/2019 12:00:00 AM"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="DEBUG" doc:name="Logger" message="PAYLOAD::#[payload]" category="${logger.category}"/>
+    </flow>
+    
+    <flow name="callback-flow" >
+        <http:listener doc:name="Listener" config-ref="okta-abac-demo-httpListenerConfig" path="/callback"/>
+        
+        <logger level="DEBUG" doc:name="PAYLOAD" message="PAYLOAD::#[payload]" category="${logger.category}"/>
+        <logger level="DEBUG" doc:name="MESSAGE" message="MESSAGE::#[message]" category="${logger.category}"/>
+        <ee:transform doc:name="Transform ATTRIBUTES" >
+            <ee:variables>
+                <ee:set-variable variableName="attributes"><![CDATA[%dw 2.0
+output application/json
+---
+attributes]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>        
+        <logger level="DEBUG" doc:name="ATTRIBUTES" message="ATTRIBUTES::#[vars.attributes]" category="${logger.category}"/>
+
+    </flow>
+</mule>
